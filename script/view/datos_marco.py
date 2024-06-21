@@ -1,6 +1,6 @@
 from script.controllers.controlador_ingreso_datos import ControladorDatos
 from tkinter import *
-from tkinter import ttk
+from tkinter import ttk,messagebox
 
 class MarcoDatos:
 
@@ -70,8 +70,61 @@ class MarcoDatos:
         self.etiqueta_mostrar_datos_guardados =Label(self.cuerpo_mostrar_datos, text="",font=("Arial",12))
         self.etiqueta_mostrar_datos_guardados.grid(row=0, columnspan=2, padx=10, pady=5)
     
+    def borrar_datos_m (self):
+        self.controlador.limpiar_datos()
+    def obtener_dato(self):
+        return self.entry_dato.get()
+    
+    def obtener_cantidad_dato(self):
+        return self.entry_cantidad_dato.get()
+    
+    def obtener_nombre_estudio(self):
+        return self.entry_nombre_estudio.get()
+    
+    def limpiar_entradas_datos(self):
+        self.entry_dato.delete(0, END)
+        self.entry_cantidad_dato.delete(0, END)
+
+    def limpiar_entrada_nombre_estudio(self):
+        self.entry_nombre_estudio.delete(0, END)
+
+    def limpiar_combobox(self):
+        self.seleccion_dato_combobox.set("")
+
+    def actualizar_datos_guardados(self, datos):
+        self.etiqueta_mostrar_datos_guardados.config(text="\n".join([f"Nombre : {nombre}, Cantidad : {cantidad}" for nombre, cantidad in datos]))
+    
+    def borrar_datos_guardados(self):
+        self.etiqueta_mostrar_datos_guardados.config(text="")
+
+    def actualizar_combobox(self, datos):
+        self.seleccion_dato_combobox['values'] = [nombre for nombre, _ in datos]
+
+    def borrar_combobox(self):
+        self.seleccion_dato_combobox['values'] = []
+
+    def mostrar_mensaje_error(self, mensaje):
+        messagebox.showerror("Error", mensaje)
+
+    def mostrar_mensaje_informacion(self, mensaje):
+        messagebox.showinfo("Informacion", mensaje)
+
+    def mostrar_mensaje_confirmacion(self, mensaje):
+        respuesta = messagebox.askyesno("Confirmacion", mensaje)
+        return  respuesta
+
+    def __on_click_btn_agregar(self):
+        self.controlador.agregar_dato()
+
+    def __on_click_btn_modificar(self):
+        self.controlador.modificar_dato()
+
+    def __on_click_btn_eliminar(self):
+        self.controlador.eliminar_dato()
+
     def __on_click_btn_volver(self):
+        self.limpiar_entrada_nombre_estudio()
         self.controlador.controlador_volver()
 
     def __on_click_btn_enviar_datos(self):
-        self.controlador.controlador_enviar()
+        self.controlador.enviar_datos()

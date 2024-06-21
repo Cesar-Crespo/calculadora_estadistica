@@ -19,9 +19,10 @@ class ModeloDatos:
         for col_num, encabezado in enumerate(encabezados, 1):
             sheet.cell(row=1, column=col_num, value=encabezado)
 
-        # Datos
+        # Escribir datos
         for row_num, dato in enumerate(datos, 2):
-            for col_num, valor in enumerate(dato, 1):
+            sheet.cell(row=row_num, column=1, value=dato[0])  # Escribir el dato en la primera columna
+            for col_num, valor in enumerate(dato[1:], 2):  # Empezar desde la segunda columna
                 sheet.cell(row=row_num, column=col_num, value=valor)
 
         workbook.save(nombre_archivo)    

@@ -35,11 +35,16 @@ class Aplicacion :
     def mostrar_marco(self, marco):
         marco.tkraise()
 
-    def vista_limpiar_datos_a_tabla(self, datos):
-        pass
-
-    def vista_enviar_datos_a_tabla(self,datos, nombre_Estudio):
-        pass
-
     def iniciar(self):
         self.ventana.mainloop()
+
+    def enviar_datos_a_tabla(self, datos, estudio):
+        self.marco_tabla.mostrar_datos(datos,estudio)
+        self.mostrar_marco(self.marco_tabla.frame)
+
+    def m(self):
+        self.marco_datos.borrar_combobox()
+        self.marco_datos.borrar_datos_guardados()
+        self.marco_datos.limpiar_entrada_nombre_estudio()
+        self.marco_datos.limpiar_combobox()
+        self.marco_datos.limpiar_entradas_datos()
