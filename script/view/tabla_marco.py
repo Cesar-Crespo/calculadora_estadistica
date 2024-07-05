@@ -68,7 +68,7 @@ class MarcoTabla:
 
             self.tree_scroll.config(command=self.tree.yview)
 
-            self.tree["columns"] = ("Dato", "Frecuencia", "Frecuencia Acumulada", "Frecuencia Relativa", "Frecuencia Acumulada Relativa")
+            self.tree["columns"] = ("Frecuencia", "Frecuencia Acumulada", "Frecuencia Relativa", "Frecuencia Acumulada Relativa")
             self.tree.heading("#0", text="Dato", anchor=W)
             self.tree.heading("Frecuencia", text="Frecuencia", anchor=W)
             self.tree.heading("Frecuencia Acumulada", text="Frecuencia Acumulada", anchor=W)
@@ -79,7 +79,7 @@ class MarcoTabla:
             self.tree.column("Frecuencia", anchor=W, width=100)
             self.tree.column("Frecuencia Acumulada", anchor=W, width=150)
             self.tree.column("Frecuencia Relativa", anchor=W, width=150)
-            self.tree.column("Frecuencia Acumulada Relativa", anchor=W, width=200)
+            self.tree.column("Frecuencia Acumulada Relativa", anchor=W, width=150)
 
     def mostrar_mensaje_pregunta(self, mensaje):
         respuesta = simpledialog.askinteger("Confirmacion", mensaje)
@@ -108,20 +108,32 @@ class MarcoTabla:
 
     def grafico_barras(self):
         datos = self.controlador.obtener_datos_para_graficar()
+        
         if datos:
             etiquetas, valores = zip(*datos)
+            
             if self.con_clases:
-                # Si se están utilizando clases, obtenemos las marcas de clase
-                _, marcas_clase, _, _, _, _ = zip(*self.controlador.agrupar_por_clases(self.datos))
-                plt.bar(marcas_clase, valores)
-                plt.xlabel('Marcas de Clase')
+                # Obtener marcas de clase si se usan clases
+                datos_clases = self.controlador.agrupar_por_clases(self.datos)
+                if datos_clases and len(datos_clases[0]) >= 6:  # Ajustar según la estructura devuelta
+                    _, marcas_clase, _, _, _, _ = zip(*datos_clases)
+                    print("Marcas de Clase:", marcas_clase)
+                    print("Valores:", valores)
+                    plt.bar(marcas_clase, valores)
+                    plt.xlabel('Marcas de Clase')
+                else:
+                    raise ValueError("Estructura de datos de clases inesperada")
             else:
+                print("Etiquetas:", etiquetas)
+                print("Valores:", valores)
                 plt.bar(etiquetas, valores)
                 plt.xlabel('Datos')
             
             plt.ylabel('Frecuencia')
             plt.title('Gráfico de Barras')
             plt.show()
+        else:
+            print("No hay datos disponibles para graficar.")
 
     def grafico_tortas(self):
         datos = self.controlador.obtener_datos_para_graficar()
@@ -242,19 +254,27 @@ class MarcoTabla:
 
  
 
-    def encabezados_clases(self,tabla_intervalos):
-       # tabla_intervalos = self.controlador.agrupar_por_clases(datos)
+    def encabezados_clases(self, tabla_intervalos):
+        # tabla_intervalos = self.controlador.agrupar_por_clases(datos)
         self.limpiar_tabla()
-        self.tree["columns"] = ("intervalo", "marca de clase", "frecuencia", "frecuencia acumulada", "frecuencia relativa", "frecuencia acumulada relativa")
-        self.tree.heading("intervalo", text="Intervalo")
+        self.tree["columns"] = ("marca de clase", "frecuencia", "frecuencia acumulada", "frecuencia relativa", "frecuencia acumulada relativa")
+        
+        self.tree.heading("#0", text="Intervalo")
         self.tree.heading("marca de clase", text="Marca de Clase")
         self.tree.heading("frecuencia", text="Frecuencia")
         self.tree.heading("frecuencia acumulada", text="Frecuencia Acumulada")
         self.tree.heading("frecuencia relativa", text="Frecuencia Relativa")
         self.tree.heading("frecuencia acumulada relativa", text="Frecuencia Acumulada Relativa")
-
+        
+        self.tree.column("#0", anchor='w', width=80)
+        self.tree.column("marca de clase", anchor='w', width=100)
+        self.tree.column("frecuencia", anchor='w', width=100)
+        self.tree.column("frecuencia acumulada", anchor='w', width=150)
+        self.tree.column("frecuencia relativa", anchor='w', width=150)
+        self.tree.column("frecuencia acumulada relativa", anchor='w', width=140)
+        
         for intervalo, marca_clase, frecuencia, frecuencia_acumulada, frecuencia_relativa, frecuencia_acumulada_relativa in tabla_intervalos:
-            self.tree.insert("", "end", values=(intervalo, marca_clase, frecuencia, frecuencia_acumulada, frecuencia_relativa, frecuencia_acumulada_relativa))
+            self.tree.insert("", "end", text=str(intervalo), values=(marca_clase, frecuencia, frecuencia_acumulada, frecuencia_relativa, frecuencia_acumulada_relativa))
 
         
 

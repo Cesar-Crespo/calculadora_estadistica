@@ -124,9 +124,13 @@ class ControladorTabla:
 
 
 
-    def obtener_datos_ordenados (self, datos):
-        self.datos_ordenados = sorted(datos, key=lambda x: x[0])
+    def obtener_datos_ordenados(self, datos):
+        # Convertir el primer elemento de cada tupla a un número para asegurar la ordenación numérica
+        datos_convertidos = [(float(dato[0]), dato[1]) for dato in datos]
+        # Ordenar los datos convertidos numéricamente
+        self.datos_ordenados = sorted(datos_convertidos, key=lambda x: x[0])
         return self.datos_ordenados
+
 
     def calcular_datos(self, datos_ordenados):
         print("datos en calcular_datos:", datos_ordenados)  # Verifica los datos obtenidos
